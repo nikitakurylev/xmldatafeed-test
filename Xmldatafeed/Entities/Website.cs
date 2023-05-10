@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace xmldatafeed.Domain.Entities;
+﻿namespace Xmldatafeed.Entities;
 
 public class Website
 {

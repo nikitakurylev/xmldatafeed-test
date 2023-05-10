@@ -1,4 +1,4 @@
-﻿namespace xmldatafeed.Core.Extensions;
+﻿namespace Xmldatafeed.Core.Extensions;
 
 public static class QueueExtensions
 {

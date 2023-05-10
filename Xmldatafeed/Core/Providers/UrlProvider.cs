@@ -1,6 +1,6 @@
-﻿using xmldatafeed.Abstractions.Core;
+﻿using Xmldatafeed.Abstractions.Core;
 
-namespace xmldatafeed.Core.Providers;
+namespace Xmldatafeed.Core.Providers;
 
 public class UrlProvider : IUrlProvider
 {

@@ -5,18 +5,19 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>xmldatafeed</RootNamespace>
+        <RootNamespace>Xmldatafeed</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="AngleSharp" Version="1.0.2-alpha-281" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-preview.3.23174.8" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0-preview.3.23174.8" />
+      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\xmldatafeed.Core\xmldatafeed.Core.csproj" />
-      <ProjectReference Include="..\xmldatafeed.DataAccess\xmldatafeed.DataAccess.csproj" />
+      <Folder Include="Abstractions" />
+      <Folder Include="Core" />
     </ItemGroup>
 
 </Project>

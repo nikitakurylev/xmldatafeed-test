@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using xmldatafeed.Domain.Entities;
+using Xmldatafeed.Entities;
 
-namespace xmldatafeed.Abstractions.DataAccess;
+namespace Xmldatafeed.Abstractions.DataAccess;
 
 public interface IWebsiteDbContext
 {

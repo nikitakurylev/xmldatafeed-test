@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using AngleSharp;
-using xmldatafeed.Abstractions.Core;
-using xmldatafeed.Domain.Entities;
+using Xmldatafeed.Abstractions.Core;
+using Xmldatafeed.Entities;
 
-namespace xmldatafeed.Core.Parsers;
+namespace Xmldatafeed.Core.Parsers;
 
 public class WebsiteParser : IWebsiteParser
 {
@@ -15,7 +15,7 @@ public class WebsiteParser : IWebsiteParser
 
     public WebsiteParser()
     {
-        IConfiguration config = Configuration.Default.WithDefaultLoader();
+        var config = Configuration.Default.WithDefaultLoader();
         _context = BrowsingContext.New(config);
         _websites = new List<Website>();
         _urlQueue = new Queue<string>();
@@ -32,7 +32,7 @@ public class WebsiteParser : IWebsiteParser
                 return null;
         }
 
-        Website website = new Website
+        var website = new Website
         {
             Url = url,
             Title = doc.Title
@@ -42,7 +42,6 @@ public class WebsiteParser : IWebsiteParser
         if (elements.Length > 0)
             website.Description = elements[0].Attributes["content"]?.Value;
 
-        Console.WriteLine(url + " " + Thread.CurrentThread.ManagedThreadId);
         return website;
     }
 
@@ -62,13 +61,13 @@ public class WebsiteParser : IWebsiteParser
         }
     }
 
-    public List<Website> ParseWebsites(IEnumerable<string> urls)
+    public IEnumerable<Website> ParseWebsites(IEnumerable<string> urls)
     {
         _websites = new List<Website>();
         _urlQueue = new Queue<string>(urls);
         var threads = new Task[ThreadCount];
 
-        for (int i = 0; i < threads.Length; i++)
+        for (var i = 0; i < threads.Length; i++)
         {
             threads[i] = ParseQueueAsync();
         }

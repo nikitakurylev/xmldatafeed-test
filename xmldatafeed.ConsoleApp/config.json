@@ -1,5 +1,0 @@
-﻿{
-  "ConnectionStrings": {
-    "DbConnection": "server=localhost;user=root;password=12345qwert;database=xmldatafeed;"
-  }
-}

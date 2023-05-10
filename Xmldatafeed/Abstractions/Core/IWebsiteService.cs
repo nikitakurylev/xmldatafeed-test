@@ -1,4 +1,4 @@
-﻿namespace xmldatafeed.Abstractions.Core;
+﻿namespace Xmldatafeed.Abstractions.Core;
 
 public interface IWebsiteService
 {

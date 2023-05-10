@@ -1,15 +1,14 @@
-﻿using xmldatafeed.Abstractions.Core;
-using xmldatafeed.Abstractions.DataAccess;
-using xmldatafeed.Core.Extensions;
-using xmldatafeed.Domain.Entities;
+﻿using Xmldatafeed.Abstractions.Core;
+using Xmldatafeed.Abstractions.DataAccess;
+using Xmldatafeed.Core.Extensions;
 
-namespace xmldatafeed.Core.Services;
+namespace Xmldatafeed.Core.Services;
 
 public class WebsiteService : IWebsiteService
 {
-    private IWebsiteParser _websiteParser;
-    private IWebsiteDbContext _websiteDbContext;
-    private IUrlProvider _urlProvider;
+    private readonly IWebsiteParser _websiteParser;
+    private readonly IWebsiteDbContext _websiteDbContext;
+    private readonly IUrlProvider _urlProvider;
 
     public WebsiteService(IWebsiteParser websiteParser, IWebsiteDbContext websiteDbContext, IUrlProvider urlProvider)
     {
@@ -21,7 +20,7 @@ public class WebsiteService : IWebsiteService
 
     public async Task ParseAndSaveWebsites()
     {
-        Queue<string> urlQueue = new Queue<string>(_urlProvider.GetUrls());
+        var urlQueue = new Queue<string>(_urlProvider.GetUrls());
 
         while (urlQueue.Any())
         {

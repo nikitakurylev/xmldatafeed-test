@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using xmldatafeed.Abstractions.DataAccess;
-using xmldatafeed.Domain.Entities;
+using Xmldatafeed.Abstractions.DataAccess;
+using Xmldatafeed.Entities;
 
-namespace xmldatafeed.DataAccess;
+namespace Xmldatafeed.DataAccess;
 
 public class WebsiteDbContext : DbContext, IWebsiteDbContext
 {
-    private string _connectionString;
+    private readonly string _connectionString;
     public DbSet<Website> Websites { get; set; }
 
     public WebsiteDbContext(string connectionString)
