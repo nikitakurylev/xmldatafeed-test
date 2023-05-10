@@ -1,15 +1,19 @@
-﻿namespace xmldatafeed.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace xmldatafeed.Domain.Entities;
 
 public class Website
 {
     public Website()
     {
-        PrimaryKey = Guid.NewGuid();
+        Id = Guid.NewGuid();
+        Date = DateTime.Now;
     }
     
-    public Guid PrimaryKey { get; protected set; }
+    public Guid Id { get; protected set; }
     
     public string Url { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public DateTime Date { get; set; }
 }

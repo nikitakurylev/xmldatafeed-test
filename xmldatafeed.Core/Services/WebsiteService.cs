@@ -1,5 +1,7 @@
 ﻿using xmldatafeed.Abstractions.Core;
 using xmldatafeed.Abstractions.DataAccess;
+using xmldatafeed.Core.Extensions;
+using xmldatafeed.Domain.Entities;
 
 namespace xmldatafeed.Core.Services;
 
@@ -9,17 +11,23 @@ public class WebsiteService : IWebsiteService
     private IWebsiteDbContext _websiteDbContext;
     private IUrlProvider _urlProvider;
 
-    public WebsiteService(IWebsiteParser websiteParser,/* IWebsiteDbContext websiteDbContext,*/ IUrlProvider urlProvider)
+    public WebsiteService(IWebsiteParser websiteParser, IWebsiteDbContext websiteDbContext, IUrlProvider urlProvider)
     {
         _websiteParser = websiteParser;
-        //_websiteDbContext = websiteDbContext;
+        _websiteDbContext = websiteDbContext;
         _urlProvider = urlProvider;
+
     }
-    
+
     public async void ParseAndSaveWebsites()
     {
-        string[] urls = _urlProvider.GetUrls();
+        Queue<string> urlQueue = new Queue<string>(_urlProvider.GetUrls());
 
-        _websiteParser.ParseWebsites(urls);
+        while (urlQueue.Any())
+        {
+            var websites = await _websiteParser.ParseWebsites(urlQueue.DequeueChunk(20).ToArray());
+            await _websiteDbContext.Websites.AddRangeAsync(websites);
+            await _websiteDbContext.SaveChangesAsync();
+        }
     }
 }

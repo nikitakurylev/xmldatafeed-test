@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using AngleSharp;
 using xmldatafeed.Abstractions.Core;
-using xmldatafeed.Core.Extensions;
 using xmldatafeed.Domain.Entities;
 
 namespace xmldatafeed.Core.Parsers;
@@ -22,7 +21,7 @@ public class WebsiteParser : IWebsiteParser
         _urlQueue = new Queue<string>();
     }
 
-    private async Task<Website?> ParseWebsite(string url)
+    private async Task<Website?> ParseWebsiteAsync(string url)
     {
         var doc = await _context.OpenAsync("https://" + url);
 
@@ -35,50 +34,54 @@ public class WebsiteParser : IWebsiteParser
 
         Website website = new Website
         {
-            Title = doc.Title ?? string.Empty
+            Url = url,
+            Title = doc.Title
         };
 
         var elements = doc.GetElementsByName("description");
         if (elements.Length > 0)
-            website.Description = elements[0].Attributes["content"]?.Value ?? string.Empty;
+            website.Description = elements[0].Attributes["content"]?.Value;
 
-        Console.WriteLine(website.Title);
+        Console.WriteLine(url + " " + Thread.CurrentThread.ManagedThreadId);
         return website;
     }
 
-    private async void ParseQueue()
+    private async Task ParseQueueAsync()
     {
-        while (_urlQueue.Any())
+        try
         {
-            string url;
-            lock (DataQueueLock)
+            while (_urlQueue.Any())
             {
-                url = _urlQueue.Dequeue();
-            }
+                string url;
+                lock (DataQueueLock)
+                {
+                    url = _urlQueue.Dequeue();
+                }
 
-            var website = await ParseWebsite(url);
-            if (website != null)
-                _websites.Add(website);
+                var website = await ParseWebsiteAsync(url);
+                if (website != null)
+                    _websites.Add(website);
+            }
         }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
     }
 
-    public List<Website> ParseWebsites(ICollection<string> urls)
+    public async Task<List<Website>> ParseWebsites(string[] urls)
     {
         _websites = new List<Website>();
-        var bigQueue = new Queue<string>(urls);
-        while (bigQueue.Any())
-        {
-            _urlQueue = new Queue<string>(bigQueue.DequeueChunk(1000));
-            var threads = new Thread[ThreadCount];
-            for (int i = 0; i < threads.Length; i++)
-            {
-                threads[i] = new Thread(ParseQueue);
-                threads[i].Start();
-            }
+        _urlQueue = new Queue<string>(urls);
+        var threads = new Task[ThreadCount];
 
-            foreach (var thread in threads)
-                thread.Join();
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i] = ParseQueueAsync();
         }
+
+        Task.WaitAll(threads);
 
         return _websites;
     }
