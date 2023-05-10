@@ -6,6 +6,7 @@ namespace Xmldatafeed.Core.Services;
 
 public class WebsiteService : IWebsiteService
 {
+    private const int BatchSize = 1000;
     private readonly IWebsiteParser _websiteParser;
     private readonly IWebsiteDbContext _websiteDbContext;
     private readonly IUrlProvider _urlProvider;
@@ -15,7 +16,6 @@ public class WebsiteService : IWebsiteService
         _websiteParser = websiteParser;
         _websiteDbContext = websiteDbContext;
         _urlProvider = urlProvider;
-
     }
 
     public async Task ParseAndSaveWebsites()
@@ -24,7 +24,7 @@ public class WebsiteService : IWebsiteService
 
         while (urlQueue.Any())
         {
-            var websites = _websiteParser.ParseWebsites(urlQueue.DequeueChunk(1000).ToArray());
+            var websites = _websiteParser.ParseWebsites(urlQueue.DequeueChunk(BatchSize).ToArray());
             await _websiteDbContext.Websites.AddRangeAsync(websites);
             await _websiteDbContext.SaveChangesAsync();
         }

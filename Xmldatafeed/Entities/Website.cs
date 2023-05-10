@@ -2,8 +2,9 @@
 
 public class Website
 {
-    public Website()
+    public Website(string url)
     {
+        Url = url;
         Id = Guid.NewGuid();
         Date = DateTime.Now;
     }
