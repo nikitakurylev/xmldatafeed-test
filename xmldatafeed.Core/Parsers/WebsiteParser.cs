@@ -48,29 +48,21 @@ public class WebsiteParser : IWebsiteParser
 
     private async Task ParseQueueAsync()
     {
-        try
+        while (_urlQueue.Any())
         {
-            while (_urlQueue.Any())
+            string url;
+            lock (DataQueueLock)
             {
-                string url;
-                lock (DataQueueLock)
-                {
-                    url = _urlQueue.Dequeue();
-                }
-
-                var website = await ParseWebsiteAsync(url);
-                if (website != null)
-                    _websites.Add(website);
+                url = _urlQueue.Dequeue();
             }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
 
+            var website = await ParseWebsiteAsync(url);
+            if (website != null)
+                _websites.Add(website);
+        }
     }
 
-    public async Task<List<Website>> ParseWebsites(string[] urls)
+    public List<Website> ParseWebsites(IEnumerable<string> urls)
     {
         _websites = new List<Website>();
         _urlQueue = new Queue<string>(urls);

@@ -19,13 +19,13 @@ public class WebsiteService : IWebsiteService
 
     }
 
-    public async void ParseAndSaveWebsites()
+    public async Task ParseAndSaveWebsites()
     {
         Queue<string> urlQueue = new Queue<string>(_urlProvider.GetUrls());
 
         while (urlQueue.Any())
         {
-            var websites = await _websiteParser.ParseWebsites(urlQueue.DequeueChunk(20).ToArray());
+            var websites = _websiteParser.ParseWebsites(urlQueue.DequeueChunk(1000).ToArray());
             await _websiteDbContext.Websites.AddRangeAsync(websites);
             await _websiteDbContext.SaveChangesAsync();
         }

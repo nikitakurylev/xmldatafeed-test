@@ -4,5 +4,5 @@ namespace xmldatafeed.Abstractions.Core;
 
 public interface IWebsiteParser
 {
-    Task<List<Website>> ParseWebsites(string[] url);
+    List<Website> ParseWebsites(IEnumerable<string> url);
 }
